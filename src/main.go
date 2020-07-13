@@ -44,6 +44,13 @@ func main() {
 	{
 		rentersGroup.POST("create",routes.RenterCreate )
 	}
+
+	//Lease endpoints
+	leaseGroup := r.Group("leases", authMiddleWare())
+	{
+		leaseGroup.POST("create",routes.LeaseCreate )
+	}
+
 	r.Run(":3000")
 }
 

@@ -30,8 +30,27 @@ CREATE TABLE renter(
 CREATE TABLE flat(
     id SERIAL,
     building_id INTEGER REFERENCES building (id) ON DELETE CASCADE,
+    asked_price INTEGER,
+    number_door VARCHAR (255),
+    area integer,
+	PRIMARY KEY(id)
+) INHERITS (base_table);
+
+CREATE TABLE lease(
+    id SERIAL,
+    flat_id INTEGER REFERENCES flat (id) ON DELETE CASCADE,
     renter_id INTEGER REFERENCES renter (id) ON DELETE CASCADE,
-    price INTEGER,
+    price FLOAT,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    deposit FLOAT,
+	PRIMARY KEY(id)
+) INHERITS (base_table);
+
+CREATE TABLE lease_historic_price(
+    id SERIAL,
+    lease_id INTEGER REFERENCES lease (id) ON DELETE CASCADE,
+    price FLOAT,
 	PRIMARY KEY(id)
 ) INHERITS (base_table);
 
