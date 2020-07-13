@@ -17,18 +17,18 @@ var (
 )
 
 type User struct {
-	ID              int `json:"id"`
+	ID              int       `json:"id"`
 	CreatedAt       time.Time `json:"_"`
 	UpdatedAt       time.Time `json:"_"`
 	Email           string    `json:"email"`
-	PasswordHash    string    `json:"-"`
+	passwordHash    string    `json:"-"`
 	Password        string    `json:"password"`
 	PasswordConfirm string    `json:"password_confirm"`
 }
 
 func (u *User) Register(conn *pgx.Conn) error {
 	if len(u.Password) < 4 || len(u.PasswordConfirm) < 4 {
-		return fmt.Errorf("Password must be at least 4 characters long.")
+		return fmt.Errorf("password must be at least 4 characters long.")
 	}
 
 	if u.Password != u.PasswordConfirm {
@@ -36,7 +36,7 @@ func (u *User) Register(conn *pgx.Conn) error {
 	}
 
 	if len(u.Email) < 4 {
-		return fmt.Errorf("Email must be at least 4 characters long.")
+		return fmt.Errorf("email must be at least 4 characters long.")
 	}
 
 	u.Email = strings.ToLower(u.Email)
@@ -53,10 +53,10 @@ func (u *User) Register(conn *pgx.Conn) error {
 	if err != nil {
 		return fmt.Errorf("There was an error creating your account.")
 	}
-	u.PasswordHash = string(pwdHash)
+	u.passwordHash = string(pwdHash)
 
 	now := time.Now()
-	_, err = conn.Exec(context.Background(), "INSERT INTO user_account (created_at, updated_at, email, password) VALUES($1, $2, $3, $4)", now, now, u.Email, u.PasswordHash)
+	_, err = conn.Exec(context.Background(), "INSERT INTO user_account (created_at, updated_at, email, password) VALUES($1, $2, $3, $4)", now, now, u.Email, u.passwordHash)
 
 	return err
 }
@@ -75,13 +75,13 @@ func (u *User) GetAuthToken() (string, error) {
 // IsAuthenticated checks to make sure password is correct
 func (u *User) IsAuthenticated(conn *pgx.Conn) error {
 	row := conn.QueryRow(context.Background(), "SELECT id, password from user_account WHERE email = $1", u.Email)
-	err := row.Scan(&u.ID, &u.PasswordHash)
+	err := row.Scan(&u.ID, &u.passwordHash)
 	if err == pgx.ErrNoRows {
 		fmt.Println("User with email not found")
 		return fmt.Errorf("Invalid login credentials")
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(u.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(u.passwordHash), []byte(u.Password))
 	if err != nil {
 		return fmt.Errorf("Invalid login credentials")
 	}
@@ -107,7 +107,7 @@ func IsTokenValid(tokenString string) (bool, string) {
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		// fmt.Println(claims)
 		userID := claims["user_id"]
-		return true, userID.(string)
+		return true, fmt.Sprint(userID)
 	} else {
 		fmt.Printf("The alg header %v \n", claims["alg"])
 		fmt.Println(err)

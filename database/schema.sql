@@ -1,4 +1,4 @@
-
+DROP TABLE IF EXISTS base_table CASCADE ;
 CREATE TABLE base_table (
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL
@@ -14,9 +14,9 @@ CREATE TABLE user_account (
 CREATE TABLE building(
     id SERIAL,
     name VARCHAR (255),
-    adress VARCHAR (255),
-    longitude INTEGER,
-    latitude INTEGER,
+    address VARCHAR (255),
+    longitude DECIMAL(9,6),
+    latitude DECIMAL(9,6),
 	PRIMARY KEY(id)
 ) INHERITS (base_table);
 
