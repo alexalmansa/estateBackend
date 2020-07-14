@@ -14,6 +14,8 @@ func LeaseCreate( c *gin.Context){
 	lease := model.Lease{}
 	c.ShouldBindJSON(&lease)
 	err := lease.Create(&conn)
+
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
 		return

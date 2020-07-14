@@ -30,6 +30,7 @@ func main() {
 	//Flats endpoints
 	flatsGroup := r.Group("flats", authMiddleWare())
 	{
+		flatsGroup.GET("frombuilding", routes.FlatFromBuilding)
 		flatsGroup.POST("create", routes.FlatCreate)
 	}
 

@@ -21,3 +21,15 @@ func FlatCreate( c *gin.Context){
 
 	c.JSON(http.StatusOK, flat)
 }
+
+func FlatFromBuilding( c *gin.Context){
+	db, _ := c.Get("db")
+	conn := db.(pgx.Conn)
+	buildingId := c.GetString("building_id")
+	flats,err := model.GetBuildingItems(buildingId, &conn)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"items": flats})
+}

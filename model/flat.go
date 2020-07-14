@@ -28,3 +28,18 @@ func (i *Flat) Create(conn * pgx.Conn) error {
 	}
 	return nil
 }
+
+func GetBuildingItems(conn *pgx.Conn, buildingId string) ([]Flat, error){
+	rows,err := conn.Query(context.Background(), "SELECT asked_price, number_door, area FROM flat WHERE building_id = $1", buildingId)
+	if err != nil{
+		fmt.Println(" error getting items %v", err)
+		return nil, err
+	}
+	var flat []Flat
+	for rows.Next() {
+		i := Flat{}
+		err = rows.Scan( &i.AskedPrice,  &i.NumberDoor, &i.Area)
+		flat = append(flat, i)
+	}
+	return flat, nil
+}
