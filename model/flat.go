@@ -27,6 +27,7 @@ func (i *Flat) Create(conn *pgx.Conn) error {
 		return fmt.Errorf("There was a problem creating building")
 	}
 	return nil
+
 }
 
 func GetBuildingItems(conn *pgx.Conn, buildingId string) ([]Flat, error) {
