@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func FlatCreate( c *gin.Context){
+func FlatCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(pgx.Conn)
 
@@ -15,18 +15,20 @@ func FlatCreate( c *gin.Context){
 	c.ShouldBindJSON(&flat)
 	err := flat.Create(&conn)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error" : err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, flat)
 }
 
-func FlatFromBuilding( c *gin.Context){
+func FlatFromBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(pgx.Conn)
-	buildingId := c.GetString("building_id")
-	flats,err := model.GetBuildingItems(buildingId, &conn)
+	buildingId, _ := c.GetQuery("building_id")
+
+	//buildingId := c.GetString("building_id")
+	flats, err := model.GetBuildingItems(&conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

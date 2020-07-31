@@ -11,11 +11,10 @@ import (
 	"strings"
 )
 
-
 func main() {
 
 	conn, err := connectDB()
-	if err != nil{
+	if err != nil {
 
 	}
 	r := gin.Default()
@@ -37,25 +36,26 @@ func main() {
 	//Building endpoints
 	buildingGroup := r.Group("buildings", authMiddleWare())
 	{
-		buildingGroup.POST("create",routes.BuildingCreate )
+		buildingGroup.POST("create", routes.BuildingCreate)
+
 	}
 
 	//Renters endpoints
 	rentersGroup := r.Group("renters", authMiddleWare())
 	{
-		rentersGroup.POST("create",routes.RenterCreate )
+		rentersGroup.POST("create", routes.RenterCreate)
 	}
 
 	//Lease endpoints
 	leaseGroup := r.Group("leases", authMiddleWare())
 	{
-		leaseGroup.POST("create",routes.LeaseCreate )
+		leaseGroup.POST("create", routes.LeaseCreate)
 	}
 
 	r.Run(":3000")
 }
 
-func connectDB() (c *pgx.Conn, err error){
+func connectDB() (c *pgx.Conn, err error) {
 	conn, err := pgx.Connect(context.Background(), "postgresql://alexalmansa:5554@localhost:5432/estate")
 	if err != nil {
 		fmt.Println("Error connecting to DB")
