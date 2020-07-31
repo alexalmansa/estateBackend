@@ -9,15 +9,17 @@ import (
 )
 
 type Lease struct {
-	ID        int       `json:"id"`
-	CreatedAt time.Time `json:"_"`
-	UpdatedAt time.Time `json:"_"`
-	FlatId    int       `json:"flat_id"`
-	RenterId  int       `json:"renter_id"`
-	Price     float64   `json:"price"`
-	StartDate string    `json:"start_date"`
-	EndDate   string    `json:"end_date"`
-	Deposit   float64   `json:"deposit"`
+	ID         int       `json:"id"`
+	CreatedAt  time.Time `json:"_"`
+	UpdatedAt  time.Time `json:"_"`
+	FlatId     int       `json:"flat_id"`
+	RenterId   int       `json:"renter_id"`
+	Price      float64   `json:"price"`
+	StartDate  string    `json:"start_date"`
+	EndDate    string    `json:"end_date"`
+	Deposit    float64   `json:"deposit"`
+	StartDate2 time.Time `json:"start_datet"`
+	EndDate2   time.Time `json:"end_datet"`
 }
 
 func (i *Lease) Create(conn *pgx.Conn) error {
@@ -37,4 +39,34 @@ func (i *Lease) Create(conn *pgx.Conn) error {
 	}
 	return nil
 
+}
+func GetAllLeases(conn *pgx.Conn, flatId string, renterId string) ([]Lease, error) {
+	var rows pgx.Rows
+	var err error
+
+	if renterId != "" && flatId != "" {
+
+		rows, err = conn.Query(context.Background(), "SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = $1 AND flat_id = $2", renterId, flatId)
+
+	} else if flatId != "" {
+		rows, err = conn.Query(context.Background(), "SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = $1", flatId)
+
+	} else if renterId != "" {
+		rows, err = conn.Query(context.Background(), "SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = $1", renterId)
+
+	} else {
+		rows, err = conn.Query(context.Background(), "SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease")
+	}
+
+	if err != nil {
+		fmt.Println(" error getting items %v", err)
+		return nil, err
+	}
+	var lease []Lease
+	for rows.Next() {
+		i := Lease{}
+		err = rows.Scan(&i.ID, &i.EndDate2, &i.StartDate2, &i.Deposit, &i.Price, &i.RenterId, &i.FlatId)
+		lease = append(lease, i)
+	}
+	return lease, nil
 }

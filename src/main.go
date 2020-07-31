@@ -50,6 +50,8 @@ func main() {
 	leaseGroup := r.Group("leases", authMiddleWare())
 	{
 		leaseGroup.POST("create", routes.LeaseCreate)
+		leaseGroup.GET("get", routes.GetLeases)
+
 	}
 
 	r.Run(":3000")
