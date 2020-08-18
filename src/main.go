@@ -45,6 +45,8 @@ func main() {
 	rentersGroup := r.Group("renters", authMiddleWare())
 	{
 		rentersGroup.POST("create", routes.RenterCreate)
+		rentersGroup.GET("getRenter", routes.GetRenter)
+
 	}
 
 	//Lease endpoints
