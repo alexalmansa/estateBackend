@@ -37,6 +37,7 @@ func main() {
 	buildingGroup := r.Group("buildings", authMiddleWare())
 	{
 		buildingGroup.POST("create", routes.BuildingCreate)
+		buildingGroup.GET("getBuilding", routes.GetBuildings)
 
 	}
 
