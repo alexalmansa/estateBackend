@@ -57,6 +57,13 @@ func main() {
 
 	}
 
+	//files endpoint
+	filesGroup := r.Group("files", authMiddleWare())
+	{
+		filesGroup.POST("/upload", routes.Upload)
+	}
+	r.StaticFS("/file", http.Dir("public"))
+
 	r.Run(":3000")
 }
 

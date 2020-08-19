@@ -62,3 +62,9 @@ CREATE TABLE alterations(
     flat_id INTEGER REFERENCES flat (id) ON DELETE CASCADE
 
 ) INHERITS (base_table);
+
+CREATE TABLE files(
+    id SERIAL,
+    flat_id INTEGER REFERENCES flat (id) ON DELETE CASCADE,
+    file_path VARCHAR (255)
+) INHERITS (base_table);
