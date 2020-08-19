@@ -1,12 +1,15 @@
 package routes
 
 import (
+	"estateBackend/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgx/v4"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 func Upload(c *gin.Context) {
@@ -31,15 +34,24 @@ func Upload(c *gin.Context) {
 		log.Fatal(err)
 	}
 	filepath := "http://localhost:3000/file/building" + buildingId + "_flat" + flatId + "_" + filename
-	saveFile(c, filepath)
-
-	c.JSON(http.StatusOK, gin.H{"filepath": filepath})
+	error := saveFile(c, filepath)
+	if error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+	} else {
+		c.JSON(http.StatusOK, gin.H{"filepath": filepath})
+	}
 }
 
-func saveFile(c *gin.Context, filepath string) {
-	/*db, _ := c.Get("db")
+func saveFile(c *gin.Context, filepath string) error {
+	db, _ := c.Get("db")
 	conn := db.(pgx.Conn)
 
 	flatId, _ := c.GetQuery("flat_id")
-	files, err := model.FileCreate(&conn, flatId, filepath)*/
+	i, err := strconv.Atoi(flatId)
+	if err != nil {
+		// handle error
+		return err
+	} else {
+		return model.FileCreate(&conn, i, filepath)
+	}
 }
