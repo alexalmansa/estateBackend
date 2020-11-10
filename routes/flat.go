@@ -27,11 +27,23 @@ func FlatFromBuilding(c *gin.Context) {
 	conn := db.(pgx.Conn)
 	buildingId, _ := c.GetQuery("building_id")
 
-	//buildingId := c.GetString("building_id")
 	flats, err := model.GetBuildingItems(&conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"flats": flats})
+}
+
+func DeleteFlat(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(pgx.Conn)
+	flatId, _ := c.GetQuery("flat_id")
+
+	err := model.DeleteFlat(&conn, flatId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"flat " + flatId: "Deleted correctly"})
 }

@@ -31,6 +31,7 @@ func main() {
 	{
 		flatsGroup.GET("frombuilding", routes.FlatFromBuilding)
 		flatsGroup.POST("create", routes.FlatCreate)
+		flatsGroup.DELETE("delete", routes.DeleteFlat)
 	}
 
 	//Building endpoints

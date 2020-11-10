@@ -44,3 +44,13 @@ func GetBuildingItems(conn *pgx.Conn, buildingId string) ([]Flat, error) {
 	}
 	return flat, nil
 }
+
+func DeleteFlat(conn *pgx.Conn, flatId string) error {
+	row := conn.QueryRow(context.Background(), "DELETE FROM flat WHERE id = $1", flatId)
+	err := row.Scan()
+	if err != nil {
+		fmt.Println(" error deleting items %v", err)
+		return err
+	}
+	return nil
+}
