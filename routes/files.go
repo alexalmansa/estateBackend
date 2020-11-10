@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func Upload(c *gin.Context) {
@@ -21,10 +22,11 @@ func Upload(c *gin.Context) {
 	filename := header.Filename
 	flatId, _ := c.GetQuery("flat_id")
 	buildingId, _ := c.GetQuery("building_id")
+	nameNoSpaces := strings.ReplaceAll(filename, " ", "_")
 	/*if _, err := os.Stat("public/" + buildingId); os.IsNotExist(err) {
 		os.Mkdir("public/" + buildingId, 7777)
 	}*/
-	out, err := os.Create("public/building" + buildingId + "_flat" + flatId + "_" + filename)
+	out, err := os.Create("public/building" + buildingId + "_flat" + flatId + "_" + nameNoSpaces)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +35,7 @@ func Upload(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	filepath := "http://localhost:3000/file/building" + buildingId + "_flat" + flatId + "_" + filename
+	filepath := "http://localhost:3000/file/building" + buildingId + "_flat" + flatId + "_" + nameNoSpaces
 	error := saveFile(c, filepath)
 	if error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
@@ -54,4 +56,16 @@ func saveFile(c *gin.Context, filepath string) error {
 	} else {
 		return model.FileCreate(&conn, i, filepath)
 	}
+}
+
+func FilesFromFlat(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(pgx.Conn)
+	flatId, _ := c.GetQuery("flat_id")
+	flats, err := model.GetFilesFromFlat(&conn, flatId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"files": flats})
 }

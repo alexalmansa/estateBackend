@@ -61,6 +61,7 @@ func main() {
 	filesGroup := r.Group("files", authMiddleWare())
 	{
 		filesGroup.POST("/upload", routes.Upload)
+		filesGroup.GET("getFiles", routes.FilesFromFlat)
 	}
 	r.StaticFS("/file", http.Dir("public"))
 

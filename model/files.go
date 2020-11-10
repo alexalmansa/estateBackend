@@ -18,3 +18,18 @@ func FileCreate(conn *pgx.Conn, flatId int, filepath string) error {
 	}
 	return nil
 }
+
+func GetFilesFromFlat(conn *pgx.Conn, flatid string) (ret []string, err error) {
+	rows, err := conn.Query(context.Background(), "SELECT file_path FROM files WHERE flat_id = $1", flatid)
+	if err != nil {
+		fmt.Println(" error getting items %v", err)
+		return nil, err
+	}
+	var filename = ""
+	for rows.Next() {
+
+		err = rows.Scan(&filename)
+		ret = append(ret, filename)
+	}
+	return ret, nil
+}
