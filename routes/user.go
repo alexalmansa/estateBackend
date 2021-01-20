@@ -1,14 +1,14 @@
 package routes
 
 import (
+	"database/sql"
 	"estateBackend/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
 	"net/http"
 )
 
-func UsersLogin(c *gin.Context){
+func UsersLogin(c *gin.Context) {
 	user := model.User{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
@@ -16,8 +16,8 @@ func UsersLogin(c *gin.Context){
 		return
 	}
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
-	err = user.IsAuthenticated(&conn)
+	conn := db.(*sql.DB)
+	err = user.IsAuthenticated(conn)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -42,8 +42,8 @@ func UsersRegister(c *gin.Context) {
 		return
 	}
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
-	err = user.Register(&conn)
+	conn := db.(*sql.DB)
+	err = user.Register(conn)
 	if err != nil {
 		fmt.Println("Error in user.Register()")
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

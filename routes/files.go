@@ -1,10 +1,10 @@
 package routes
 
 import (
+	"database/sql"
 	"estateBackend/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
 	"io"
 	"log"
 	"net/http"
@@ -23,9 +23,7 @@ func Upload(c *gin.Context) {
 	flatId, _ := c.GetQuery("flat_id")
 	buildingId, _ := c.GetQuery("building_id")
 	nameNoSpaces := strings.ReplaceAll(filename, " ", "_")
-	/*if _, err := os.Stat("public/" + buildingId); os.IsNotExist(err) {
-		os.Mkdir("public/" + buildingId, 7777)
-	}*/
+
 	out, err := os.Create("public/building" + buildingId + "_flat" + flatId + "_" + nameNoSpaces)
 	if err != nil {
 		log.Fatal(err)
@@ -46,7 +44,7 @@ func Upload(c *gin.Context) {
 
 func saveFile(c *gin.Context, filepath string) error {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 
 	flatId, _ := c.GetQuery("flat_id")
 	i, err := strconv.Atoi(flatId)
@@ -54,15 +52,15 @@ func saveFile(c *gin.Context, filepath string) error {
 		// handle error
 		return err
 	} else {
-		return model.FileCreate(&conn, i, filepath)
+		return model.FileCreate(conn, i, filepath)
 	}
 }
 
 func FilesFromFlat(c *gin.Context) {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
-	flats, err := model.GetFilesFromFlat(&conn, flatId)
+	flats, err := model.GetFilesFromFlat(conn, flatId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

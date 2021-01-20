@@ -1,9 +1,8 @@
 package model
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
-	"github.com/jackc/pgx/v4"
 	"time"
 )
 
@@ -17,21 +16,29 @@ type Flat struct {
 	Area       int       `json:"area"`
 }
 
-func (i *Flat) Create(conn *pgx.Conn) error {
+func (i *Flat) Create(conn *sql.DB) error {
 
 	now := time.Now()
-	row := conn.QueryRow(context.Background(), "INSERT INTO flat (building_id, asked_price, number_door, area ,created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, building_id", i.BuildingId, i.AskedPrice, i.NumberDoor, i.Area, now, now)
+	row := conn.QueryRow("INSERT INTO flat (building_id, asked_price, number_door, area ,created_at, updated_at) VALUES (?,?,?,?,?,?)", i.BuildingId, i.AskedPrice, i.NumberDoor, i.Area, now, now)
 	err := row.Scan(&i.ID, &i.BuildingId)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		fmt.Println(err)
-		return fmt.Errorf("There was a problem creating building")
+		return fmt.Errorf("There was a problem creating Flat " + err.Error())
 	}
 	return nil
 
 }
 
-func GetBuildingItems(conn *pgx.Conn, buildingId string) ([]Flat, error) {
-	rows, err := conn.Query(context.Background(), "SELECT asked_price, number_door, area, id, building_id FROM flat WHERE building_id = $1", buildingId)
+func GetBuildingItems(conn *sql.DB, buildingId string) ([]Flat, error) {
+	var rows *sql.Rows
+	var err error
+
+	if buildingId != "" {
+		rows, err = conn.Query("SELECT asked_price, number_door, area, id, building_id FROM flat WHERE building_id = ?", buildingId)
+
+	} else {
+		rows, err = conn.Query("SELECT asked_price, number_door, area, id, building_id FROM flat")
+	}
 	if err != nil {
 		fmt.Println(" error getting items %v", err)
 		return nil, err
@@ -45,10 +52,10 @@ func GetBuildingItems(conn *pgx.Conn, buildingId string) ([]Flat, error) {
 	return flat, nil
 }
 
-func DeleteFlat(conn *pgx.Conn, flatId string) error {
-	row := conn.QueryRow(context.Background(), "DELETE FROM flat WHERE id = $1", flatId)
+func DeleteFlat(conn *sql.DB, flatId string) error {
+	row := conn.QueryRow("DELETE FROM flat WHERE id = ?", flatId)
 	err := row.Scan()
-	if err != nil {
+	if err != sql.ErrNoRows {
 		fmt.Println(" error deleting items %v", err)
 		return err
 	}

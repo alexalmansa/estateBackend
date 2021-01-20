@@ -1,19 +1,19 @@
 package routes
 
 import (
+	"database/sql"
 	"estateBackend/model"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
 	"net/http"
 )
 
 func BuildingCreate(c *gin.Context) {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 
 	building := model.Building{}
 	c.ShouldBindJSON(&building)
-	err := building.Create(&conn)
+	err := building.Create(conn)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -24,10 +24,10 @@ func BuildingCreate(c *gin.Context) {
 
 func GetBuildings(c *gin.Context) {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 
 	buildingId, _ := c.GetQuery("building_id")
-	buildings, err := model.GetBuildings(&conn, buildingId)
+	buildings, err := model.GetBuildings(conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

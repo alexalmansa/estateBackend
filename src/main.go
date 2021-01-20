@@ -1,12 +1,12 @@
 package main
 
 import (
-	"context"
+	"database/sql"
 	"estateBackend/model"
 	"estateBackend/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
+	_ "github.com/go-sql-driver/mysql"
 	"net/http"
 	"strings"
 )
@@ -17,17 +17,17 @@ func main() {
 	if err != nil {
 
 	}
-	r := gin.Default()
-	r.Use(dbMiddleware(*conn))
+	Router := gin.Default()
+	Router.Use(dbMiddleware(conn))
 	//Login endpoints
-	usersGroup := r.Group("users")
+	usersGroup := Router.Group("users")
 	{
 		usersGroup.POST("register", routes.UsersRegister)
 		usersGroup.POST("login", routes.UsersLogin)
 	}
 
 	//Flats endpoints
-	flatsGroup := r.Group("flats", authMiddleWare())
+	flatsGroup := Router.Group("flats", authMiddleWare())
 	{
 		flatsGroup.GET("frombuilding", routes.FlatFromBuilding)
 		flatsGroup.POST("create", routes.FlatCreate)
@@ -35,7 +35,7 @@ func main() {
 	}
 
 	//Building endpoints
-	buildingGroup := r.Group("buildings", authMiddleWare())
+	buildingGroup := Router.Group("buildings", authMiddleWare())
 	{
 		buildingGroup.POST("create", routes.BuildingCreate)
 		buildingGroup.GET("getBuilding", routes.GetBuildings)
@@ -43,7 +43,7 @@ func main() {
 	}
 
 	//Renters endpoints
-	rentersGroup := r.Group("renters", authMiddleWare())
+	rentersGroup := Router.Group("renters", authMiddleWare())
 	{
 		rentersGroup.POST("create", routes.RenterCreate)
 		rentersGroup.GET("getRenter", routes.GetRenter)
@@ -51,35 +51,40 @@ func main() {
 	}
 
 	//Lease endpoints
-	leaseGroup := r.Group("leases", authMiddleWare())
+	leaseGroup := Router.Group("leases", authMiddleWare())
 	{
 		leaseGroup.POST("create", routes.LeaseCreate)
 		leaseGroup.GET("get", routes.GetLeases)
+		leaseGroup.DELETE("delete", routes.DeleteLease)
 
 	}
 
 	//files endpoint
-	filesGroup := r.Group("files", authMiddleWare())
+	filesGroup := Router.Group("files", authMiddleWare())
 	{
 		filesGroup.POST("/upload", routes.Upload)
 		filesGroup.GET("getFiles", routes.FilesFromFlat)
 	}
-	r.StaticFS("/file", http.Dir("public"))
+	Router.StaticFS("/file", http.Dir("public"))
 
-	r.Run(":3000")
+	Router.Run(":3000")
 }
 
-func connectDB() (c *pgx.Conn, err error) {
-	conn, err := pgx.Connect(context.Background(), "postgresql://alexalmansa:5554@localhost:5432/estate")
+func connectDB() (c *sql.DB, err error) {
+	conn, err := sql.Open("mysql", "alexalmansa:test@tcp(localhost:3306)/estate")
 	if err != nil {
 		fmt.Println("Error connecting to DB")
 		fmt.Println(err.Error())
 	}
-	_ = conn.Ping(context.Background())
+
+	err = conn.Ping()
+	if err != nil {
+		fmt.Print(err.Error())
+	}
 	return conn, err
 }
 
-func dbMiddleware(conn pgx.Conn) gin.HandlerFunc {
+func dbMiddleware(conn *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Set("db", conn)
 		c.Next()

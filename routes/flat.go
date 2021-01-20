@@ -1,19 +1,19 @@
 package routes
 
 import (
+	"database/sql"
 	"estateBackend/model"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
 	"net/http"
 )
 
 func FlatCreate(c *gin.Context) {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 
 	flat := model.Flat{}
 	c.ShouldBindJSON(&flat)
-	err := flat.Create(&conn)
+	err := flat.Create(conn)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -24,10 +24,10 @@ func FlatCreate(c *gin.Context) {
 
 func FlatFromBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 	buildingId, _ := c.GetQuery("building_id")
 
-	flats, err := model.GetBuildingItems(&conn, buildingId)
+	flats, err := model.GetBuildingItems(conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -37,10 +37,10 @@ func FlatFromBuilding(c *gin.Context) {
 
 func DeleteFlat(c *gin.Context) {
 	db, _ := c.Get("db")
-	conn := db.(pgx.Conn)
+	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
 
-	err := model.DeleteFlat(&conn, flatId)
+	err := model.DeleteFlat(conn, flatId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

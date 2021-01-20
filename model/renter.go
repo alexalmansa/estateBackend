@@ -1,9 +1,8 @@
 package model
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
-	"github.com/jackc/pgx/v4"
 	"time"
 )
 
@@ -15,26 +14,26 @@ type Renter struct {
 	Age       int       `json:"age"`
 }
 
-func (i *Renter) Create(conn *pgx.Conn) error {
+func (i *Renter) Create(conn *sql.DB) error {
 
 	now := time.Now()
-	row := conn.QueryRow(context.Background(), "INSERT INTO renter (name, age, created_at, updated_at) VALUES ($1, $2, $3, $4) RETURNING id", i.Name, i.Age, now, now)
+	row := conn.QueryRow("INSERT INTO renter (name, age, created_at, updated_at) VALUES (?,?,?,?)", i.Name, i.Age, now, now)
 	err := row.Scan(&i.ID)
-	if err != nil {
+	if err != sql.ErrNoRows {
 		fmt.Println(err)
 		return fmt.Errorf("There was a problem creating renter")
 	}
 	return nil
 }
 
-func GetRenters(conn *pgx.Conn, renterId string) ([]Renter, error) {
-	var rows pgx.Rows
+func GetRenters(conn *sql.DB, renterId string) ([]Renter, error) {
+	var rows *sql.Rows
 	var err error
 	if renterId != "" {
-		rows, err = conn.Query(context.Background(), "SELECT id, name, age, created_at, updated_at FROM renter WHERE id = $1", renterId)
+		rows, err = conn.Query("SELECT id, name, age, created_at, updated_at FROM renter WHERE id = ?", renterId)
 
 	} else {
-		rows, err = conn.Query(context.Background(), "SELECT id, name, age, created_at, updated_at FROM renter ")
+		rows, err = conn.Query("SELECT id, name, age, created_at, updated_at FROM renter ")
 
 	}
 	if err != nil {

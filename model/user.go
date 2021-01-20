@@ -1,16 +1,14 @@
 package model
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/jackc/pgx/v4"
 	"golang.org/x/crypto/bcrypt"
 	"os"
 	"strings"
 	"time"
 )
-
 
 var (
 	tokenSecret = []byte(os.Getenv("TOKEN_SECRET"))
@@ -26,7 +24,7 @@ type User struct {
 	PasswordConfirm string    `json:"password_confirm"`
 }
 
-func (u *User) Register(conn *pgx.Conn) error {
+func (u *User) Register(conn *sql.DB) error {
 	if len(u.Password) < 4 || len(u.PasswordConfirm) < 4 {
 		return fmt.Errorf("password must be at least 4 characters long.")
 	}
@@ -40,13 +38,13 @@ func (u *User) Register(conn *pgx.Conn) error {
 	}
 
 	u.Email = strings.ToLower(u.Email)
-	row := conn.QueryRow(context.Background(), "SELECT id from user_account WHERE email = $1", u.Email)
+	row := conn.QueryRow("SELECT id from user_account WHERE email = ?", u.Email)
 	userLookup := User{}
 	err := row.Scan(&userLookup)
-	if err != pgx.ErrNoRows {
+	if err != sql.ErrNoRows {
 		fmt.Println("found user")
 		fmt.Println(userLookup.Email)
-		return fmt.Errorf("A user with that email already exists")
+		return fmt.Errorf("A user with that email already exists" + err.Error())
 	}
 
 	pwdHash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
@@ -56,7 +54,7 @@ func (u *User) Register(conn *pgx.Conn) error {
 	u.passwordHash = string(pwdHash)
 
 	now := time.Now()
-	_, err = conn.Exec(context.Background(), "INSERT INTO user_account (created_at, updated_at, email, password) VALUES($1, $2, $3, $4)", now, now, u.Email, u.passwordHash)
+	_, err = conn.Exec("INSERT INTO user_account (created_at, updated_at, email, password) VALUES(?,?,?,?)", now, now, u.Email, u.passwordHash)
 
 	return err
 }
@@ -73,10 +71,10 @@ func (u *User) GetAuthToken() (string, error) {
 }
 
 // IsAuthenticated checks to make sure password is correct
-func (u *User) IsAuthenticated(conn *pgx.Conn) error {
-	row := conn.QueryRow(context.Background(), "SELECT id, password from user_account WHERE email = $1", u.Email)
+func (u *User) IsAuthenticated(conn *sql.DB) error {
+	row := conn.QueryRow("SELECT id, password from user_account WHERE email = ?", u.Email)
 	err := row.Scan(&u.ID, &u.passwordHash)
-	if err == pgx.ErrNoRows {
+	if err == sql.ErrNoRows {
 		fmt.Println("User with email not found")
 		return fmt.Errorf("Invalid login credentials")
 	}
