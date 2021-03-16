@@ -19,7 +19,7 @@ func UsersLogin(c *gin.Context) {
 	conn := db.(*sql.DB)
 	err = user.IsAuthenticated(conn)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	token, err := user.GetAuthToken()
@@ -30,7 +30,7 @@ func UsersLogin(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusBadRequest, gin.H{
+	c.JSON(http.StatusUnauthorized, gin.H{
 		"error": "There was an error authenticating.",
 	})
 }

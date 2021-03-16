@@ -22,6 +22,7 @@ type User struct {
 	passwordHash    string    `json:"-"`
 	Password        string    `json:"password"`
 	PasswordConfirm string    `json:"password_confirm"`
+	Role            int       `json:"role"`
 }
 
 func (u *User) Register(conn *sql.DB) error {
@@ -53,8 +54,10 @@ func (u *User) Register(conn *sql.DB) error {
 	}
 	u.passwordHash = string(pwdHash)
 
+	//Todo: think about the role logic
+	u.Role = 0
 	now := time.Now()
-	_, err = conn.Exec("INSERT INTO user_account (created_at, updated_at, email, password) VALUES(?,?,?,?)", now, now, u.Email, u.passwordHash)
+	_, err = conn.Exec("INSERT INTO user_account (created_at, updated_at, email, password, role) VALUES(?,?,?,?,?)", now, now, u.Email, u.passwordHash, u.Role)
 
 	return err
 }
@@ -64,6 +67,7 @@ func (u *User) GetAuthToken() (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = u.ID
+	claims["role"] = u.Role
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &claims)
 	authToken, err := token.SignedString(tokenSecret)
@@ -72,8 +76,8 @@ func (u *User) GetAuthToken() (string, error) {
 
 // IsAuthenticated checks to make sure password is correct
 func (u *User) IsAuthenticated(conn *sql.DB) error {
-	row := conn.QueryRow("SELECT id, password from user_account WHERE email = ?", u.Email)
-	err := row.Scan(&u.ID, &u.passwordHash)
+	row := conn.QueryRow("SELECT id, password, role from user_account WHERE email = ?", u.Email)
+	err := row.Scan(&u.ID, &u.passwordHash, &u.Role)
 	if err == sql.ErrNoRows {
 		fmt.Println("User with email not found")
 		return fmt.Errorf("Invalid login credentials")

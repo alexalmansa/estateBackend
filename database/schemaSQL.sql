@@ -1,4 +1,3 @@
-DROP TABLE IF EXISTS user_account;
 
 DROP TABLE IF EXISTS alterations;
 DROP TABLE IF EXISTS files;
@@ -9,6 +8,8 @@ DROP TABLE IF EXISTS flat;
 
 DROP TABLE IF EXISTS building;
 
+DROP TABLE IF EXISTS user_account;
+
 CREATE TABLE user_account
 (
     id int NOT NULL AUTO_INCREMENT,
@@ -16,7 +17,8 @@ CREATE TABLE user_account
     PRIMARY KEY (id),
     updated_at TIMESTAMP,
     email    VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    role int NOT NULL
 
 ) ;
 
