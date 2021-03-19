@@ -32,7 +32,7 @@ func FlatFromBuilding(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"flats": flats})
+	c.JSON(http.StatusOK, flats)
 }
 
 func DeleteFlat(c *gin.Context) {

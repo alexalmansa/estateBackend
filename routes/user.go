@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 func UsersLogin(c *gin.Context) {
@@ -51,14 +53,45 @@ func UsersRegister(c *gin.Context) {
 	}
 
 	token, err := user.GetAuthToken()
-	if err == nil {
-		c.JSON(http.StatusOK, gin.H{
-			"token": token,
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error getting token ": err,
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"user_id": user.ID,
+		"token": token,
+	})
+}
+func UsersChangePassword(c *gin.Context) {
+	user := model.PasswordChange{}
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	db, _ := c.Get("db")
+	conn := db.(*sql.DB)
+	bearer := c.Request.Header.Get("Authorization")
+	fmt.Printf(bearer)
+	split := strings.Split(bearer, "Bearer ")
+	token := split[1]
+	isValid, userId := model.IsTokenValid(token)
+	i, err := strconv.Atoi(userId)
+
+	if isValid && err == nil {
+		err = user.ChangePassword(conn, i)
+		if err != nil {
+			fmt.Println("Error in user.Register()" + err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{})
+		return
+	}
+	c.JSON(http.StatusBadRequest, gin.H{
+		"error": "error with the token",
 	})
 }
