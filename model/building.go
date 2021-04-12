@@ -27,6 +27,19 @@ func (i *Building) Create(conn *sql.DB) error {
 	}
 	return nil
 }
+func (i *Building) Update(conn *sql.DB) error {
+
+	fmt.Printf("BUILDING ID: %d ", i.ID)
+	now := time.Now()
+	row := conn.QueryRow("UPDATE building SET name = ?, address = ?, longitude = ?, latitude = ?, updated_at = ? WHERE id = ?; ", i.Name, i.Address, i.Longitude, i.Latitude, now, i.ID)
+
+	err := row.Scan(&i.ID)
+	if err != sql.ErrNoRows {
+		fmt.Println(err)
+		return fmt.Errorf("There was a problem updating building ")
+	}
+	return nil
+}
 
 func GetBuildings(conn *sql.DB, buildingId string) ([]Building, error) {
 	var rows *sql.Rows
@@ -49,4 +62,13 @@ func GetBuildings(conn *sql.DB, buildingId string) ([]Building, error) {
 		building = append(building, i)
 	}
 	return building, nil
+}
+func DeleteBuilding(conn *sql.DB, buildingId string) error {
+	row := conn.QueryRow("DELETE FROM building WHERE id = ?", buildingId)
+	err := row.Scan()
+	if err != sql.ErrNoRows {
+		fmt.Println(" error deleting items %v", err)
+		return err
+	}
+	return nil
 }

@@ -63,7 +63,8 @@ func main() {
 	{
 		buildingGroup.POST("create", routes.BuildingCreate)
 		buildingGroup.GET("getBuilding", routes.GetBuildings)
-
+		buildingGroup.DELETE("delete", routes.DeleteBuilding)
+		buildingGroup.PUT("edit", routes.UpdateBuilding)
 	}
 
 	//Renters endpoints
@@ -132,8 +133,6 @@ func authMiddleWare() gin.HandlerFunc {
 			c.Abort()
 		} else {
 			c.Set("user_id", userID)
-			fmt.Printf("UID SAVED")
-			fmt.Printf(userID)
 			c.Next()
 		}
 	}
