@@ -29,6 +29,20 @@ func (i *Flat) Create(conn *sql.DB) error {
 
 }
 
+func (i *Flat) UpdateFlat(conn *sql.DB) error {
+
+	fmt.Printf("BUILDING ID: %d ", i.ID)
+	now := time.Now()
+	row := conn.QueryRow("UPDATE flat SET asked_price = ?, number_door = ?, area = ?, updated_at = ?, building_id = ? WHERE id = ?; ", i.AskedPrice, i.NumberDoor, i.Area, now, i.BuildingId, i.ID)
+
+	err := row.Scan(&i.ID)
+	if err != sql.ErrNoRows {
+		fmt.Println(err)
+		return fmt.Errorf("There was a problem updating flat ")
+	}
+	return nil
+}
+
 func GetBuildingItems(conn *sql.DB, buildingId string) ([]Flat, error) {
 	var rows *sql.Rows
 	var err error

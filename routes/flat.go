@@ -47,3 +47,18 @@ func DeleteFlat(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"flat " + flatId: "Deleted correctly"})
 }
+
+func UpdateFlat(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(*sql.DB)
+
+	flat := model.Flat{}
+	c.ShouldBindJSON(&flat)
+	err := flat.UpdateFlat(conn)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, flat)
+}

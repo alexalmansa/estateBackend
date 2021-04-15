@@ -1,0 +1,825 @@
+{
+	"info": {
+		"_postman_id": "6c892e0e-cdde-41dc-ae62-343d254f6d87",
+		"name": "estateBackendCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login/register",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\" : \"test\",\n\t\"password\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"token\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MTYyMjY4MzYsInJvbGUiOjAsInVzZXJfaWQiOjN9.KNFx2CWmkzSJpuq4FKlxMxSJTeVZhMu8hHvqeGoEP9s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"password\": \"test\",\n    \"password_confirm\": \"test\",\n    \"password_old\": \"alexpass\"\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/changePassword",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"changePassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"password\": \"passs\",\n\"password_confirm\": \"passs\",\n\"email\": \"alex@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"register"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "10",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "buildings",
+			"item": [
+				{
+					"name": "createBuilding",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"building1\",\n\t\"address\" : \"Calle asda 5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/buildings/create",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"buildings",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update building",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": 1,\n        \"name\": \"building123\",\n        \"address\": \"Calle asda 5\",\n        \"longitude\": 10.234234,\n        \"latitude\": 123.2342\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/buildings/edit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"buildings",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "select buildings",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/buildings/getBuilding",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"buildings",
+								"getBuilding"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete building",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/buildings/delete?building_id=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"buildings",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "building_id",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flats",
+			"item": [
+				{
+					"name": "createFlat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"building_id\": 1,\n\t\"asked_price\" : 2000,\n\t\"number_door\": \"7o 4a\",\n\t\"area\": 190\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/flats/create",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"flats",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update flat",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n    \"id\": 5,\n\t\"building_id\": 5,\n\t\"asked_price\" : 2000,\n\t\"number_door\": \"7o 4a\",\n\t\"area\": 190\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/flats/edit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"flats",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Select all flats from building",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"building_id\": 1,\n\t\"asked_price\" : 1,\n\t\"number_door\": \"7o 3a\",\n\t\"area\": 120\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/flats/frombuilding",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"flats",
+								"frombuilding"
+							],
+							"query": [
+								{
+									"key": "building_id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete flat Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/flats/delete?flat_id=10",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"flats",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "flat_id",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Renters",
+			"item": [
+				{
+					"name": "createRenters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"Alex\",\n\t\"nif\" : \"asdfsd23\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/renters/create",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"renters",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get renters",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/renters/getRenter",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"renters",
+								"getRenter"
+							],
+							"query": [
+								{
+									"key": "renter_id",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete renter",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/flats/delete?renter_id=1",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"flats",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "renter_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Leases",
+			"item": [
+				{
+					"name": "createLease",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ4MzQzODQsInVzZXJfaWQiOjF9.xP2UF7B-7bVg6G4SDrBC_k-tSEZAMvVrvBUzoQeZ648"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"flat_id\": 4,\n\t\"renter_id\" : 1,\n\t\"price\": 8000,\n\t\"start_date\": \"1999-05-22\",\n\t\"end_date\": \"2020-01-05\",\n\t\"deposit\": 120\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/leases/create",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"leases",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get leases",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ4MzQzODQsInVzZXJfaWQiOjF9.xP2UF7B-7bVg6G4SDrBC_k-tSEZAMvVrvBUzoQeZ648"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/leases/get",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"leases",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete Lease",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/leases/delete?lease_id=6",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"leases",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "lease_id",
+									"value": "6"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "files",
+			"item": [
+				{
+					"name": "upload file",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/alexalmansa/Desktop/Untitled.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost:3000/files/upload?flat_id=2&building_id=2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"files",
+								"upload"
+							],
+							"query": [
+								{
+									"key": "flat_id",
+									"value": "2"
+								},
+								{
+									"key": "building_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get files",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/files/getFiles?flat_id=2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"files",
+								"getFiles"
+							],
+							"query": [
+								{
+									"key": "flat_id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

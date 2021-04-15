@@ -56,6 +56,8 @@ func main() {
 		flatsGroup.GET("frombuilding", routes.FlatFromBuilding)
 		flatsGroup.POST("create", routes.FlatCreate)
 		flatsGroup.DELETE("delete", routes.DeleteFlat)
+		flatsGroup.PUT("edit", routes.UpdateFlat)
+
 	}
 
 	//Building endpoints
@@ -72,6 +74,8 @@ func main() {
 	{
 		rentersGroup.POST("create", routes.RenterCreate)
 		rentersGroup.GET("getRenter", routes.GetRenter)
+		rentersGroup.DELETE("delete", routes.DeleteRenter)
+		rentersGroup.PUT("edit", routes.UpdateRenter)
 
 	}
 

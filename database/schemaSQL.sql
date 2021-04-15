@@ -41,7 +41,7 @@ CREATE TABLE renter
     created_at TIMESTAMP ,
     updated_at TIMESTAMP,
     name VARCHAR(255),
-    age  INTEGER,
+    nif  VARCHAR(255),
     PRIMARY KEY (id)
 ) ;
 
