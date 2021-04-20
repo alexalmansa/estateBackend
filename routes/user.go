@@ -65,23 +65,18 @@ func UsersRegister(c *gin.Context) {
 	})
 }
 func UsersChangePassword(c *gin.Context) {
-	user := model.PasswordChange{}
-	err := c.ShouldBindJSON(&user)
+	passwordChange := model.PasswordChange{}
+	err := c.ShouldBindJSON(&passwordChange)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
-	bearer := c.Request.Header.Get("Authorization")
-	fmt.Printf(bearer)
-	split := strings.Split(bearer, "Bearer ")
-	token := split[1]
-	isValid, userId := model.IsTokenValid(token)
-	i, err := strconv.Atoi(userId)
+	isValid, i, err := isUservalid(c)
 
 	if isValid && err == nil {
-		err = user.ChangePassword(conn, i)
+		err = passwordChange.ChangePassword(conn, i)
 		if err != nil {
 			fmt.Println("Error in user.Register()" + err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -94,4 +89,35 @@ func UsersChangePassword(c *gin.Context) {
 	c.JSON(http.StatusBadRequest, gin.H{
 		"error": "error with the token",
 	})
+}
+
+func GetMe(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(*sql.DB)
+	isValid, i, err := isUservalid(c)
+	if isValid && err == nil {
+		err, user := model.GetMyUSer(conn, i)
+		if err != nil {
+			fmt.Println("Error in user.Register()" + err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, user)
+		return
+
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "error with the token",
+		})
+	}
+}
+
+func isUservalid(c *gin.Context) (bool, int, error) {
+	bearer := c.Request.Header.Get("Authorization")
+	fmt.Printf(bearer)
+	split := strings.Split(bearer, "Bearer ")
+	token := split[1]
+	isValid, userId := model.IsTokenValid(token)
+	i, err := strconv.Atoi(userId)
+	return isValid, i, err
 }

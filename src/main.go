@@ -48,6 +48,7 @@ func main() {
 		usersGroup.POST("register", routes.UsersRegister)
 		usersGroup.POST("changePassword", routes.UsersChangePassword)
 		usersGroup.POST("login", routes.UsersLogin)
+		usersGroup.GET("me", routes.GetMe)
 	}
 
 	//Flats endpoints

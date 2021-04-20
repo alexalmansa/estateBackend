@@ -56,6 +56,9 @@ CREATE TABLE flat
     asked_price INTEGER,
     number_door VARCHAR(255),
     area        integer,
+    boiler_date VARCHAR(255),
+    boiler_description VARCHAR(255),
+    price_index FLOAT,
     PRIMARY KEY (id)
 ) ;
 

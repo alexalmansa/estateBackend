@@ -91,6 +91,16 @@ func (u *User) IsAuthenticated(conn *sql.DB) error {
 	return nil
 }
 
+func GetMyUSer(conn *sql.DB, id int) (error, User) {
+	u := User{}
+	row := conn.QueryRow("SELECT id, email , role from user_account WHERE id = ?", id)
+	err := row.Scan(&u.ID, &u.Email, &u.Role)
+	if err == sql.ErrNoRows {
+		return fmt.Errorf("Invalid login credentials"), u
+	}
+	return err, u
+}
+
 func IsTokenValid(tokenString string) (bool, string) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// fmt.Printf("Parsing: %v \n", token)
