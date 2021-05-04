@@ -44,8 +44,7 @@ func (u *User) Register(conn *sql.DB) error {
 	err := row.Scan(&userLookup)
 	if err != sql.ErrNoRows {
 		fmt.Println("found user")
-		fmt.Println(userLookup.Email)
-		return fmt.Errorf("A user with that email already exists" + err.Error())
+		return fmt.Errorf("A user with that email already exists")
 	}
 
 	pwdHash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
@@ -54,10 +53,8 @@ func (u *User) Register(conn *sql.DB) error {
 	}
 	u.passwordHash = string(pwdHash)
 
-	//Todo: think about the role logic
-	u.Role = 0
 	now := time.Now()
-	_, err = conn.Exec("INSERT INTO user_account (created_at, updated_at, email, password, role) VALUES(?,?,?,?,?)", now, now, u.Email, u.passwordHash, u.Role)
+	_, err = conn.Exec("INSERT INTO user_account (created_at, updated_at, email, password, role) VALUES(?,?,?,?,?)", now, now, u.Email, u.passwordHash, 0)
 
 	return err
 }
@@ -91,7 +88,7 @@ func (u *User) IsAuthenticated(conn *sql.DB) error {
 	return nil
 }
 
-func GetMyUSer(conn *sql.DB, id int) (error, User) {
+func GetMyUser(conn *sql.DB, id int) (error, User) {
 	u := User{}
 	row := conn.QueryRow("SELECT id, email , role from user_account WHERE id = ?", id)
 	err := row.Scan(&u.ID, &u.Email, &u.Role)

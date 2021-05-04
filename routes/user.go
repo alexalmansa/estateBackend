@@ -96,7 +96,7 @@ func GetMe(c *gin.Context) {
 	conn := db.(*sql.DB)
 	isValid, i, err := isUservalid(c)
 	if isValid && err == nil {
-		err, user := model.GetMyUSer(conn, i)
+		err, user := model.GetMyUser(conn, i)
 		if err != nil {
 			fmt.Println("Error in user.Register()" + err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
