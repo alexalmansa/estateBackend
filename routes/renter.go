@@ -26,13 +26,13 @@ func GetRenter(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	buildingId, _ := c.GetQuery("renter_id")
-	buildings, err := model.GetRenters(conn, buildingId)
+	renterId, _ := c.GetQuery("renter_id")
+	renters, err := model.GetRenters(conn, renterId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"renters": buildings})
+	c.JSON(http.StatusOK, renters)
 }
 func DeleteRenter(c *gin.Context) {
 	db, _ := c.Get("db")

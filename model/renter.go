@@ -29,7 +29,7 @@ func (i *Renter) UpdateRenter(conn *sql.DB) error {
 
 	fmt.Printf("BUILDING ID: %d ", i.ID)
 	now := time.Now()
-	row := conn.QueryRow("UPDATE renter SET name = ?, nif = ?, longitude = ?, latitude = ?, updated_at = ? WHERE id = ?; ", i.Name, i.Nif, now, i.ID)
+	row := conn.QueryRow("UPDATE renter SET name = ?, nif = ? , updated_at = ? WHERE id = ?; ", i.Name, i.Nif, now, i.ID)
 
 	err := row.Scan(&i.ID)
 	if err != sql.ErrNoRows {
