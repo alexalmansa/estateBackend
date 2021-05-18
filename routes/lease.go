@@ -28,13 +28,14 @@ func GetLeases(c *gin.Context) {
 	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
 	renterid, _ := c.GetQuery("renter_id")
-
-	leases, err := model.GetAllLeases(conn, flatId, renterid)
+	pastLeases := true
+	pastLeases = c.GetBool("past_leases")
+	leases, err := model.GetAllLeases(conn, flatId, renterid, pastLeases)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"items": leases})
+	c.JSON(http.StatusOK, leases)
 }
 
 func DeleteLease(c *gin.Context) {
@@ -46,5 +47,20 @@ func DeleteLease(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"flat " + leaseId: "Deleted correctly"})
+	c.JSON(http.StatusOK, gin.H{"Lease " + leaseId: "Deleted correctly"})
+}
+
+func UpdateLease(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(*sql.DB)
+
+	lease := model.Lease{}
+	c.ShouldBindJSON(&lease)
+	err := lease.UpdateLease(conn)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, lease)
 }

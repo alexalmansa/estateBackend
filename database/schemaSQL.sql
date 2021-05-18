@@ -29,8 +29,8 @@ CREATE TABLE building
     updated_at TIMESTAMP,
     name      VARCHAR(255),
     address   VARCHAR(255),
-    longitude DECIMAL(9, 6),
-    latitude  DECIMAL(9, 6),
+    longitude FLOAT,
+    latitude  FLOAT,
     PRIMARY KEY (id)
 ) ;
 
@@ -81,24 +81,12 @@ CREATE TABLE lease
 ) ;
 
 
-CREATE TABLE lease_historic_price
-(
-    id       int NOT NULL AUTO_INCREMENT,
-    created_at TIMESTAMP ,
-    updated_at TIMESTAMP,
-    lease_id  INTEGER,
-    FOREIGN KEY (lease_id) REFERENCES lease (id) ON DELETE CASCADE,
-    price    FLOAT,
-    PRIMARY KEY (id)
-) ;
-
-
 CREATE TABLE alterations
 (
     id          int NOT NULL AUTO_INCREMENT,
-    created_at TIMESTAMP ,
+    created_at TIMESTAMP,
     updated_at TIMESTAMP,
-    date        DATETIME,
+    alter_date        TIMESTAMP,
     price       INTEGER,
     description VARCHAR(255),
     flat_id INTEGER,

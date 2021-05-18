@@ -12,8 +12,8 @@ type Building struct {
 	UpdatedAt time.Time `json:"_"`
 	Name      string    `json:"name"`
 	Address   string    `json:"address"`
-	Longitude float64   `json:"longitude"`
-	Latitude  float64   `json:"latitude"`
+	Longitude float32   `json:"longitude"`
+	Latitude  float32   `json:"latitude"`
 }
 
 func (i *Building) Create(conn *sql.DB) error {

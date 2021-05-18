@@ -80,12 +80,22 @@ func main() {
 
 	}
 
+	//Alterations endpoints
+	alterationsGroup := Router.Group("alterations", authMiddleWare())
+	{
+		alterationsGroup.POST("create", routes.AlterationCreate)
+		alterationsGroup.GET("getAlteration", routes.GetAlterations)
+		alterationsGroup.DELETE("delete", routes.DeleteAlteration)
+		alterationsGroup.PUT("edit", routes.UpdateAlteration)
+	}
+
 	//Lease endpoints
 	leaseGroup := Router.Group("leases", authMiddleWare())
 	{
 		leaseGroup.POST("create", routes.LeaseCreate)
-		leaseGroup.GET("get", routes.GetLeases)
+		leaseGroup.GET("getLease", routes.GetLeases)
 		leaseGroup.DELETE("delete", routes.DeleteLease)
+		leaseGroup.PUT("edit", routes.UpdateLease)
 
 	}
 

@@ -40,22 +40,29 @@ func (i *Lease) Create(conn *sql.DB) error {
 	return nil
 
 }
-func GetAllLeases(conn *sql.DB, flatId string, renterId string) ([]Lease, error) {
+
+func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases bool) ([]Lease, error) {
 	var rows *sql.Rows
 	var err error
 
 	if renterId != "" && flatId != "" {
-
-		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ?", renterId, flatId)
-
+		if !pastLeases {
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date", renterId, flatId)
+		} else {
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? ORDER BY end_date", renterId, flatId)
+		}
 	} else if flatId != "" {
-		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ?", flatId)
-
+		if !pastLeases {
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date", flatId)
+		} else {
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? ORDER BY end_date", flatId)
+		}
 	} else if renterId != "" {
+
 		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ?", renterId)
 
 	} else {
-		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease")
+		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE end_date >= current_date() ")
 	}
 
 	if err != nil {
@@ -77,6 +84,19 @@ func DeleteLease(conn *sql.DB, leaseId string) error {
 	if err != sql.ErrNoRows {
 		fmt.Println(" error deleting items %v", err)
 		return err
+	}
+	return nil
+}
+
+func (i *Lease) UpdateLease(conn *sql.DB) error {
+
+	now := time.Now()
+	row := conn.QueryRow("UPDATE lease SET end_date = ?, start_date = ?, deposit = ?, price = ?, renter_id = ?, flat_id = ?, updated_at = ? WHERE id = ?; ", i.EndDate, i.StartDate, i.Deposit, i.Price, i.RenterId, i.FlatId, now, i.ID)
+
+	err := row.Scan(&i.ID)
+	if err != sql.ErrNoRows {
+		fmt.Println(err)
+		return fmt.Errorf("There was a problem updating lease ")
 	}
 	return nil
 }

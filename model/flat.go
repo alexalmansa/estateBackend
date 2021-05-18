@@ -35,7 +35,6 @@ func (i *Flat) Create(conn *sql.DB) error {
 
 func (i *Flat) UpdateFlat(conn *sql.DB) error {
 
-	fmt.Printf("BUILDING ID: %d ", i.ID)
 	now := time.Now()
 	row := conn.QueryRow("UPDATE flat SET asked_price = ?,floor = ?, door_number = ?, area = ?, updated_at = ?, building_id = ?, boiler_date = ?, boiler_description = ?, price_index = ? WHERE id = ?; ", i.AskedPrice, i.Floor, i.DoorNumber, i.Area, now, i.BuildingId, i.BoilerDate, i.BoilerDescription, i.PriceIndex, i.ID)
 
