@@ -84,7 +84,7 @@ func main() {
 	alterationsGroup := Router.Group("alterations", authMiddleWare())
 	{
 		alterationsGroup.POST("create", routes.AlterationCreate)
-		alterationsGroup.GET("getAlteration", routes.GetAlterations)
+		alterationsGroup.GET("getAlterations", routes.GetAlterations)
 		alterationsGroup.DELETE("delete", routes.DeleteAlteration)
 		alterationsGroup.PUT("edit", routes.UpdateAlteration)
 	}

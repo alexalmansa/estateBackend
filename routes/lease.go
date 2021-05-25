@@ -28,8 +28,8 @@ func GetLeases(c *gin.Context) {
 	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
 	renterid, _ := c.GetQuery("renter_id")
-	pastLeases := true
-	pastLeases = c.GetBool("past_leases")
+	pastLeases := "true"
+	pastLeases, _ = c.GetQuery("past_leases")
 	leases, err := model.GetAllLeases(conn, flatId, renterid, pastLeases)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

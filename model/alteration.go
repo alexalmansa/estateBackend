@@ -24,12 +24,13 @@ func (i *Alteration) Create(conn *sql.DB) error {
 
 	if errDate != nil {
 		fmt.Println("Error with date format")
+		return fmt.Errorf("There was a problem creating alteration")
 	} else {
-		row := conn.QueryRow("INSERT INTO alterations (flat_id, price, alter_date, created_at, updated_at) VALUES (?,?,?,?,?)", i.FlatId, i.Price, date, now, now)
+		row := conn.QueryRow("INSERT INTO alterations (flat_id, price, alter_date, description, created_at, updated_at) VALUES (?,?,?,?,?,?)", i.FlatId, i.Price, date, i.Description, now, now)
 		err2 := row.Scan(&i.ID)
 		if err2 != sql.ErrNoRows {
 			fmt.Println(err2)
-			return fmt.Errorf("There was a problem creating lease")
+			return fmt.Errorf("There was a problem creating alteration")
 		}
 	}
 	return nil
@@ -42,10 +43,10 @@ func GetAlterations(conn *sql.DB, flatId string) ([]Alteration, error) {
 
 	if flatId != "" {
 
-		rows, err = conn.Query("SELECT id,flat_id, price, alter_date FROM alterations WHERE flat_id = ? ", flatId)
+		rows, err = conn.Query("SELECT id,flat_id, price, alter_date, description FROM alterations WHERE flat_id = ? ", flatId)
 
 	} else {
-		rows, err = conn.Query("SELECT id,flat_id, price, alter_date FROM alterations")
+		rows, err = conn.Query("SELECT id,flat_id, price, alter_date, description FROM alterations")
 
 	}
 
@@ -56,7 +57,7 @@ func GetAlterations(conn *sql.DB, flatId string) ([]Alteration, error) {
 	var alteration []Alteration
 	for rows.Next() {
 		i := Alteration{}
-		err = rows.Scan(&i.ID, &i.FlatId, &i.Price, &i.Date)
+		err = rows.Scan(&i.ID, &i.FlatId, &i.Price, &i.Date, &i.Description)
 		alteration = append(alteration, i)
 	}
 	return alteration, nil
@@ -75,7 +76,7 @@ func DeleteAlteration(conn *sql.DB, alterationId string) error {
 func (i *Alteration) UpdateAlteration(conn *sql.DB) error {
 
 	now := time.Now()
-	row := conn.QueryRow("UPDATE alterations SET flat_id = ?, price = ?, alter_date  = ?, updated_at = ? WHERE id = ?; ", i.FlatId, i.Price, i.Date, now, i.ID)
+	row := conn.QueryRow("UPDATE alterations SET flat_id = ?, price = ?, alter_date  = ?, description = ?, updated_at = ? WHERE id = ?; ", i.FlatId, i.Price, i.Date, i.Description, now, i.ID)
 
 	err := row.Scan(&i.ID)
 	if err != sql.ErrNoRows {

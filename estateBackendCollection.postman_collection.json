@@ -68,7 +68,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MTYyMjY4MzYsInJvbGUiOjAsInVzZXJfaWQiOjN9.KNFx2CWmkzSJpuq4FKlxMxSJTeVZhMu8hHvqeGoEP9s",
+									"value": "{{token}}",
 									"type": "string"
 								}
 							]
@@ -77,7 +77,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"password\": \"test\",\n    \"password_confirm\": \"test\",\n    \"password_old\": \"alexpass\"\n\n}",
+							"raw": "{\n\t\"password\": \"test\",\n    \"password_confirm\": \"test\",\n    \"password_old\": \"testt\"\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -100,6 +100,41 @@
 				},
 				{
 					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"password\": \"passs\",\n\"password_confirm\": \"passs\",\n\"email\": \"alexa\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/register",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"register"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "10",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -325,7 +360,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"building_id\": 1,\n\t\"asked_price\" : 2000,\n\t\"number_door\": \"7o 4a\",\n\t\"area\": 190\n\n}",
+							"raw": "{\n\t\"building_id\": 1,\n\t\"asked_price\" : 2000,\n\t\"number_door\": \"7o 4a\",\n\t\"area\": 190,\n    \"boiler_date\": \"01/12/1998\",\n    \"boiler_description\": \"marca, model\",\n    \"price_index\": 1.23\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -369,7 +404,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "\n{\n    \"id\": 5,\n\t\"building_id\": 5,\n\t\"asked_price\" : 2000,\n\t\"number_door\": \"7o 4a\",\n\t\"area\": 190\n\n}",
+							"raw": "\n{\n    \"id\": 1,\n\t\"building_id\": 1,\n\t\"asked_price\" : 2000,\n\t\"number_door\": \"7o 4a\",\n\t\"area\": 190,\n    \"boiler_date\": \"01/12/1998\",\n    \"boiler_description\": \"marca, model\",\n    \"price_index\": 1.66\n\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -432,6 +467,188 @@
 							"path": [
 								"flats",
 								"frombuilding"
+							],
+							"query": [
+								{
+									"key": "building_id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete flat Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/flats/delete?flat_id=10",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"flats",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "flat_id",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Alterations",
+			"item": [
+				{
+					"name": "createAlteration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"flat_id\": 4,\n\t\"price\" : 2000,\n    \"date\": \"01/12/1998\",\n    \"description\": \"marca, model\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/alterations/create",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"alterations",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update alteration",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":1,\n\t\"flat_id\": 4,\n\t\"price\" : 2000,\n    \"date\": \"01/12/1998\",\n    \"description\": \"marca, modell\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/alterations/edit",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"alterations",
+								"edit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Select Alterations",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE1OTQ3NDg4MzMsInVzZXJfaWQiOjF9.yeDYUjVBZ-3zz-f3Vt87wNLLyDwJAD_HrtlRXn4vrgI"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"building_id\": 1,\n\t\"asked_price\" : 1,\n\t\"number_door\": \"7o 3a\",\n\t\"area\": 120\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/alterations/getAlterations",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"alterations",
+								"getAlterations"
 							],
 							"query": [
 								{
@@ -627,7 +844,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"flat_id\": 4,\n\t\"renter_id\" : 1,\n\t\"price\": 8000,\n\t\"start_date\": \"1999-05-22\",\n\t\"end_date\": \"2020-01-05\",\n\t\"deposit\": 120\n}",
+							"raw": "{\n\t\"flat_id\": 19,\n\t\"renter_id\" : 2,\n\t\"price\": 8000,\n\t\"start_date\": \"1999-05-22\",\n\t\"end_date\": \"2020-01-05\",\n\t\"deposit\": 120\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -682,14 +899,14 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:3000/leases/get",
+							"raw": "localhost:3000/leases/getLease",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
 								"leases",
-								"get"
+								"getLease"
 							]
 						}
 					},
@@ -756,12 +973,12 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/Users/alexalmansa/Desktop/Untitled.png"
+									"src": "/Users/alexalmansa/Desktop/CamScanner 04-02-2021 10.12.pdf"
 								}
 							]
 						},
 						"url": {
-							"raw": "localhost:3000/files/upload?flat_id=2&building_id=2",
+							"raw": "localhost:3000/files/upload?flat_id=20&building_id=2",
 							"host": [
 								"localhost"
 							],
@@ -773,7 +990,7 @@
 							"query": [
 								{
 									"key": "flat_id",
-									"value": "2"
+									"value": "20"
 								},
 								{
 									"key": "building_id",
@@ -800,7 +1017,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:3000/files/getFiles?flat_id=2",
+							"raw": "localhost:3000/files/getFiles?flat_id=20",
 							"host": [
 								"localhost"
 							],
@@ -812,7 +1029,12 @@
 							"query": [
 								{
 									"key": "flat_id",
-									"value": "2"
+									"value": "20"
+								},
+								{
+									"key": "asd",
+									"value": "true",
+									"disabled": true
 								}
 							]
 						}

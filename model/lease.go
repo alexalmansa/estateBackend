@@ -41,18 +41,18 @@ func (i *Lease) Create(conn *sql.DB) error {
 
 }
 
-func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases bool) ([]Lease, error) {
+func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases string) ([]Lease, error) {
 	var rows *sql.Rows
 	var err error
 
 	if renterId != "" && flatId != "" {
-		if !pastLeases {
+		if pastLeases == "false" {
 			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date", renterId, flatId)
 		} else {
 			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? ORDER BY end_date", renterId, flatId)
 		}
 	} else if flatId != "" {
-		if !pastLeases {
+		if pastLeases == "false" {
 			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date", flatId)
 		} else {
 			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? ORDER BY end_date", flatId)
@@ -62,7 +62,13 @@ func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases bool)
 		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ?", renterId)
 
 	} else {
-		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE end_date >= current_date() ")
+		if pastLeases == "false" {
+
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE end_date >= current_date() ")
+		} else {
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease ")
+
+		}
 	}
 
 	if err != nil {
