@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type Files struct {
+	FileName string `json:"file_name"`
+}
+
 func FileCreate(conn *sql.DB, flatId int, filepath string) error {
 	now := time.Now()
 	row := conn.QueryRow("INSERT INTO files (flat_id, file_path, created_at, updated_at) VALUES (?,?,?,?)", flatId, filepath, now, now)
@@ -18,17 +22,17 @@ func FileCreate(conn *sql.DB, flatId int, filepath string) error {
 	return nil
 }
 
-func GetFilesFromFlat(conn *sql.DB, flatid string) (ret []string, err error) {
+func GetFilesFromFlat(conn *sql.DB, flatid string) (ret []Files, err error) {
 	rows, err := conn.Query("SELECT file_path FROM files WHERE flat_id = ?", flatid)
 	if err != nil {
 		fmt.Println(" error getting items %v", err)
 		return nil, err
 	}
-	var filename = ""
+	var files []Files
 	for rows.Next() {
-
-		err = rows.Scan(&filename)
-		ret = append(ret, filename)
+		i := Files{}
+		err = rows.Scan(&i.FileName)
+		files = append(files, i)
 	}
-	return ret, nil
+	return files, nil
 }

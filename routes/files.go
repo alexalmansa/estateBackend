@@ -9,23 +9,46 @@ import (
 	"log"
 	"net/http"
 	"os"
+	filepath2 "path/filepath"
 	"strconv"
 	"strings"
 )
 
 func Upload(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(*sql.DB)
+	//Get flat from id
+	flatId, _ := c.GetQuery("flat_id")
+
+	flat, _ := model.GetFlat(conn, flatId)
+	if flat.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+		return
+	}
+
 	file, header, err := c.Request.FormFile("file")
+
 	if err != nil {
 		c.String(http.StatusBadRequest, fmt.Sprintf("file err : %s", err.Error()))
 		return
 	}
+	buildingId := strconv.Itoa(flat.BuildingId)
 	filename := header.Filename
-	flatId, _ := c.GetQuery("flat_id")
-	buildingId, _ := c.GetQuery("building_id")
+
 	nameNoSpaces := strings.ReplaceAll(filename, " ", "_")
 
-	out, err := os.Create("public/building" + buildingId + "_flat" + flatId + "_" + nameNoSpaces)
-	if err != nil {
+	path := filepath2.Join("files/flats/building"+buildingId, "/flat"+flatId)
+
+	filepath := path + "/" + nameNoSpaces
+
+	if _, err := os.Stat(filepath); err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "A file with the name : " + filename + " already exists"})
+		return
+	}
+	err2 := os.MkdirAll(path, os.ModePerm)
+
+	out, err := os.Create(filepath)
+	if err != nil && err2 != nil {
 		log.Fatal(err)
 	}
 	defer out.Close()
@@ -33,12 +56,11 @@ func Upload(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	filepath := "http://localhost:3000/file/building" + buildingId + "_flat" + flatId + "_" + nameNoSpaces
-	error := saveFile(c, filepath)
+	error := saveFile(c, filename)
 	if error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 	} else {
-		c.JSON(http.StatusOK, gin.H{"filepath": filepath})
+		c.JSON(http.StatusOK, gin.H{"File uploaded": filename})
 	}
 }
 
@@ -60,10 +82,26 @@ func FilesFromFlat(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
-	flats, err := model.GetFilesFromFlat(conn, flatId)
+	flatFiles, err := model.GetFilesFromFlat(conn, flatId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"files": flats})
+	c.JSON(http.StatusOK, flatFiles)
+}
+func DownloadFile(c *gin.Context) {
+	db, _ := c.Get("db")
+	conn := db.(*sql.DB)
+	flatId, _ := c.GetQuery("flat_id")
+	fileName, _ := c.GetQuery("file_name")
+	//Get flat from id
+	flat, _ := model.GetFlat(conn, flatId)
+	if flat.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+		return
+	}
+
+	path := filepath2.Join("./files/flats/building"+strconv.Itoa(flat.BuildingId), "/flat"+flatId)
+
+	c.FileAttachment(path+"/"+fileName, fileName)
 }

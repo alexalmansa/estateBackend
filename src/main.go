@@ -100,12 +100,13 @@ func main() {
 	}
 
 	//files endpoint
-	filesGroup := Router.Group("files", authMiddleWare())
+	filesGroup := Router.Group("files")
 	{
 		filesGroup.POST("/upload", routes.Upload)
 		filesGroup.GET("getFiles", routes.FilesFromFlat)
+		filesGroup.GET("downloadFile", routes.DownloadFile)
 	}
-	Router.StaticFS("/file", http.Dir("public"))
+	Router.Static("/file", "./public")
 
 	Router.Run(":3000")
 }

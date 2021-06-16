@@ -47,26 +47,26 @@ func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases strin
 
 	if renterId != "" && flatId != "" {
 		if pastLeases == "false" {
-			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date", renterId, flatId)
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date DESC ", renterId, flatId)
 		} else {
-			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? ORDER BY end_date", renterId, flatId)
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? AND flat_id = ? ORDER BY end_date DESC", renterId, flatId)
 		}
 	} else if flatId != "" {
 		if pastLeases == "false" {
-			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date", flatId)
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? AND end_date >= end_date >= current_date() ORDER BY end_date DESC", flatId)
 		} else {
-			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? ORDER BY end_date", flatId)
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE flat_id = ? ORDER BY end_date DESC", flatId)
 		}
 	} else if renterId != "" {
 
-		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ?", renterId)
+		rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE renter_id = ? ORDER BY end_date DESC", renterId)
 
 	} else {
 		if pastLeases == "false" {
 
-			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE end_date >= current_date() ")
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease WHERE end_date >= current_date() ORDER BY end_date DESC")
 		} else {
-			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease ")
+			rows, err = conn.Query("SELECT id, end_date, start_date, deposit, price, renter_id, flat_id FROM lease ORDER BY end_date DESC")
 
 		}
 	}

@@ -69,6 +69,29 @@ func GetBuildingItems(conn *sql.DB, buildingId string) ([]Flat, error) {
 	return flat, nil
 }
 
+func GetFlat(conn *sql.DB, flatId string) (Flat, error) {
+	var rows *sql.Rows
+	var err error
+
+	if flatId != "" {
+		rows, err = conn.Query("SELECT asked_price, floor, door_number, area, id, building_id, boiler_date, boiler_description, price_index FROM flat WHERE id = ? ", flatId)
+
+	} else {
+		return Flat{}, err
+	}
+	if err != nil {
+		fmt.Println(" error getting items %v", err)
+		return Flat{}, err
+	}
+	var flat Flat
+	for rows.Next() {
+		i := Flat{}
+		err = rows.Scan(&i.AskedPrice, &i.Floor, &i.DoorNumber, &i.Area, &i.ID, &i.BuildingId, &i.BoilerDate, &i.BoilerDescription, &i.PriceIndex)
+		flat = i
+	}
+	return flat, nil
+}
+
 func DeleteFlat(conn *sql.DB, flatId string) error {
 	row := conn.QueryRow("DELETE FROM flat WHERE id = ?", flatId)
 	err := row.Scan()
