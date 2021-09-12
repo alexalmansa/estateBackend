@@ -46,7 +46,7 @@ func (i *Flat) UpdateFlat(conn *sql.DB) error {
 	return nil
 }
 
-func GetBuildingItems(conn *sql.DB, buildingId string) ([]Flat, error) {
+func (i *Flat) GetBuildingItems(conn *sql.DB, buildingId string) ([]Flat, error) {
 	var rows *sql.Rows
 	var err error
 
@@ -69,7 +69,7 @@ func GetBuildingItems(conn *sql.DB, buildingId string) ([]Flat, error) {
 	return flat, nil
 }
 
-func GetFlat(conn *sql.DB, flatId string) (Flat, error) {
+func (i *Flat) GetFlat(conn *sql.DB, flatId string) (Flat, error) {
 	var rows *sql.Rows
 	var err error
 
@@ -92,7 +92,7 @@ func GetFlat(conn *sql.DB, flatId string) (Flat, error) {
 	return flat, nil
 }
 
-func DeleteFlat(conn *sql.DB, flatId string) error {
+func (i *Flat) DeleteFlat(conn *sql.DB, flatId string) error {
 	row := conn.QueryRow("DELETE FROM flat WHERE id = ?", flatId)
 	err := row.Scan()
 	if err != sql.ErrNoRows {

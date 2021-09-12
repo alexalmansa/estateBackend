@@ -41,7 +41,7 @@ func (i *Lease) Create(conn *sql.DB) error {
 
 }
 
-func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases string) ([]Lease, error) {
+func (i *Lease) GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases string) ([]Lease, error) {
 	var rows *sql.Rows
 	var err error
 
@@ -84,7 +84,7 @@ func GetAllLeases(conn *sql.DB, flatId string, renterId string, pastLeases strin
 	return lease, nil
 }
 
-func DeleteLease(conn *sql.DB, leaseId string) error {
+func (i *Lease) DeleteLease(conn *sql.DB, leaseId string) error {
 	row := conn.QueryRow("DELETE FROM lease WHERE id = ?", leaseId)
 	err := row.Scan()
 	if err != sql.ErrNoRows {

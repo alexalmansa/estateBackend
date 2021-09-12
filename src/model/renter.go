@@ -39,7 +39,7 @@ func (i *Renter) UpdateRenter(conn *sql.DB) error {
 	return nil
 }
 
-func GetRenters(conn *sql.DB, renterId string) ([]Renter, error) {
+func (i *Renter) GetRenters(conn *sql.DB, renterId string) ([]Renter, error) {
 	var rows *sql.Rows
 	var err error
 	if renterId != "" {
@@ -62,7 +62,7 @@ func GetRenters(conn *sql.DB, renterId string) ([]Renter, error) {
 	return renter, nil
 }
 
-func DeleteRenter(conn *sql.DB, renterId string) error {
+func (i *Renter) DeleteRenter(conn *sql.DB, renterId string) error {
 	row := conn.QueryRow("DELETE FROM renter WHERE id = ?", renterId)
 	err := row.Scan()
 	if err != sql.ErrNoRows {

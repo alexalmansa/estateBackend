@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	"estateBackend/model"
+	model2 "estateBackend/src/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func AlterationCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	alteration := model.Alteration{}
+	alteration := model2.Alteration{}
 	c.ShouldBindJSON(&alteration)
 	err := alteration.Create(conn)
 	if err != nil {
@@ -26,8 +26,9 @@ func GetAlterations(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
+	alteration := model2.Alteration{}
 
-	altertions, err := model.GetAlterations(conn, flatId)
+	altertions, err := alteration.GetAlterations(conn, flatId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -39,7 +40,9 @@ func DeleteAlteration(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	alterationId, _ := c.GetQuery("alteration_id")
-	err := model.DeleteAlteration(conn, alterationId)
+	alteration := model2.Alteration{}
+
+	err := alteration.DeleteAlteration(conn, alterationId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -51,7 +54,7 @@ func UpdateAlteration(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	alteration := model.Alteration{}
+	alteration := model2.Alteration{}
 	c.ShouldBindJSON(&alteration)
 	err := alteration.UpdateAlteration(conn)
 	if err != nil {

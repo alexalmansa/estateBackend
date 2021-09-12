@@ -10,7 +10,7 @@ type Files struct {
 	FileName string `json:"file_name"`
 }
 
-func FileCreate(conn *sql.DB, flatId int, filepath string) error {
+func (i *Files) FileCreate(conn *sql.DB, flatId int, filepath string) error {
 	now := time.Now()
 	row := conn.QueryRow("INSERT INTO files (flat_id, file_path, created_at, updated_at) VALUES (?,?,?,?)", flatId, filepath, now, now)
 	var id int
@@ -22,7 +22,7 @@ func FileCreate(conn *sql.DB, flatId int, filepath string) error {
 	return nil
 }
 
-func GetFilesFromFlat(conn *sql.DB, flatid string) (ret []Files, err error) {
+func (i *Files) GetFilesFromFlat(conn *sql.DB, flatid string) (ret []Files, err error) {
 	rows, err := conn.Query("SELECT file_path FROM files WHERE flat_id = ?", flatid)
 	if err != nil {
 		fmt.Println(" error getting items %v", err)

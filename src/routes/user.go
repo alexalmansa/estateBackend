@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	"estateBackend/model"
+	model2 "estateBackend/src/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 )
 
 func UsersLogin(c *gin.Context) {
-	user := model.User{}
+	user := model2.User{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -37,7 +37,7 @@ func UsersLogin(c *gin.Context) {
 	})
 }
 func UsersRegister(c *gin.Context) {
-	user := model.User{}
+	user := model2.User{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -65,7 +65,7 @@ func UsersRegister(c *gin.Context) {
 	})
 }
 func UsersChangePassword(c *gin.Context) {
-	passwordChange := model.PasswordChange{}
+	passwordChange := model2.PasswordChange{}
 	err := c.ShouldBindJSON(&passwordChange)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -96,7 +96,8 @@ func GetMe(c *gin.Context) {
 	conn := db.(*sql.DB)
 	isValid, i, err := isUservalid(c)
 	if isValid && err == nil {
-		err, user := model.GetMyUser(conn, i)
+		user := model2.User{}
+		err, user := user.GetMyUser(conn, i)
 		if err != nil {
 			fmt.Println("Error in user.Register()" + err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -117,7 +118,8 @@ func isUservalid(c *gin.Context) (bool, int, error) {
 	fmt.Printf(bearer)
 	split := strings.Split(bearer, "Bearer ")
 	token := split[1]
-	isValid, userId := model.IsTokenValid(token)
+	user := model2.User{}
+	isValid, userId := user.IsTokenValid(token)
 	i, err := strconv.Atoi(userId)
 	return isValid, i, err
 }

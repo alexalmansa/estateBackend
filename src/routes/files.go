@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	"estateBackend/model"
+	model2 "estateBackend/src/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
@@ -19,8 +19,9 @@ func Upload(c *gin.Context) {
 	conn := db.(*sql.DB)
 	//Get flat from id
 	flatId, _ := c.GetQuery("flat_id")
+	flatModel := model2.Flat{}
 
-	flat, _ := model.GetFlat(conn, flatId)
+	flat, _ := flatModel.GetFlat(conn, flatId)
 	if flat.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return
@@ -67,6 +68,7 @@ func Upload(c *gin.Context) {
 func saveFile(c *gin.Context, filepath string) error {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
+	file := model2.Files{}
 
 	flatId, _ := c.GetQuery("flat_id")
 	i, err := strconv.Atoi(flatId)
@@ -74,7 +76,7 @@ func saveFile(c *gin.Context, filepath string) error {
 		// handle error
 		return err
 	} else {
-		return model.FileCreate(conn, i, filepath)
+		return file.FileCreate(conn, i, filepath)
 	}
 }
 
@@ -82,7 +84,9 @@ func FilesFromFlat(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
-	flatFiles, err := model.GetFilesFromFlat(conn, flatId)
+	file := model2.Files{}
+
+	flatFiles, err := file.GetFilesFromFlat(conn, flatId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -95,7 +99,8 @@ func DownloadFile(c *gin.Context) {
 	flatId, _ := c.GetQuery("flat_id")
 	fileName, _ := c.GetQuery("file_name")
 	//Get flat from id
-	flat, _ := model.GetFlat(conn, flatId)
+	flatModel := model2.Flat{}
+	flat, _ := flatModel.GetFlat(conn, flatId)
 	if flat.ID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return

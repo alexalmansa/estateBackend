@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	"estateBackend/model"
+	model2 "estateBackend/src/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func FlatCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	flat := model.Flat{}
+	flat := model2.Flat{}
 	c.ShouldBindJSON(&flat)
 	err := flat.Create(conn)
 	if err != nil {
@@ -26,8 +26,9 @@ func FlatFromBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	buildingId, _ := c.GetQuery("building_id")
+	flat := model2.Flat{}
 
-	flats, err := model.GetBuildingItems(conn, buildingId)
+	flats, err := flat.GetBuildingItems(conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -39,8 +40,9 @@ func DeleteFlat(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	flatId, _ := c.GetQuery("flat_id")
+	flat := model2.Flat{}
 
-	err := model.DeleteFlat(conn, flatId)
+	err := flat.DeleteFlat(conn, flatId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -52,7 +54,7 @@ func UpdateFlat(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	flat := model.Flat{}
+	flat := model2.Flat{}
 	c.ShouldBindJSON(&flat)
 	err := flat.UpdateFlat(conn)
 	if err != nil {

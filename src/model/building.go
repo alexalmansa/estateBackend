@@ -41,7 +41,7 @@ func (i *Building) Update(conn *sql.DB) error {
 	return nil
 }
 
-func GetBuildings(conn *sql.DB, buildingId string) ([]Building, error) {
+func (i *Building) GetBuildings(conn *sql.DB, buildingId string) ([]Building, error) {
 	var rows *sql.Rows
 	var err error
 	if buildingId != "" {
@@ -63,7 +63,7 @@ func GetBuildings(conn *sql.DB, buildingId string) ([]Building, error) {
 	}
 	return building, nil
 }
-func DeleteBuilding(conn *sql.DB, buildingId string) error {
+func (i *Building) DeleteBuilding(conn *sql.DB, buildingId string) error {
 	row := conn.QueryRow("DELETE FROM building WHERE id = ?", buildingId)
 	err := row.Scan()
 	if err != sql.ErrNoRows {

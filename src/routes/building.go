@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	"estateBackend/model"
+	model2 "estateBackend/src/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func BuildingCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	building := model.Building{}
+	building := model2.Building{}
 	c.ShouldBindJSON(&building)
 	err := building.Create(conn)
 	if err != nil {
@@ -25,9 +25,10 @@ func BuildingCreate(c *gin.Context) {
 func GetBuildings(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
+	building := model2.Building{}
 
 	buildingId, _ := c.GetQuery("building_id")
-	buildings, err := model.GetBuildings(conn, buildingId)
+	buildings, err := building.GetBuildings(conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -39,7 +40,9 @@ func DeleteBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	buildingId, _ := c.GetQuery("building_id")
-	err := model.DeleteBuilding(conn, buildingId)
+	building := model2.Building{}
+
+	err := building.DeleteBuilding(conn, buildingId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -51,7 +54,7 @@ func UpdateBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	building := model.Building{}
+	building := model2.Building{}
 	c.ShouldBindJSON(&building)
 	err := building.Update(conn)
 	if err != nil {

@@ -37,7 +37,7 @@ func (i *Alteration) Create(conn *sql.DB) error {
 
 }
 
-func GetAlterations(conn *sql.DB, flatId string) ([]Alteration, error) {
+func (i *Alteration) GetAlterations(conn *sql.DB, flatId string) ([]Alteration, error) {
 	var rows *sql.Rows
 	var err error
 
@@ -63,7 +63,7 @@ func GetAlterations(conn *sql.DB, flatId string) ([]Alteration, error) {
 	return alteration, nil
 }
 
-func DeleteAlteration(conn *sql.DB, alterationId string) error {
+func (i *Alteration) DeleteAlteration(conn *sql.DB, alterationId string) error {
 	row := conn.QueryRow("DELETE FROM alterations WHERE id = ?", alterationId)
 	err := row.Scan()
 	if err != sql.ErrNoRows {

@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	tokenSecret = []byte(os.Getenv("TOKEN_SECRET"))
+	tokenSecret = []byte(os.Getenv("jWnZr4u7x!A%C*F-JaNdRgUkXp2s5v8y"))
 )
 
 type User struct {
@@ -62,7 +62,6 @@ func (u *User) Register(conn *sql.DB) error {
 // GetAuthToken returns the auth token to be used
 func (u *User) GetAuthToken() (string, error) {
 	claims := jwt.MapClaims{}
-	claims["authorized"] = true
 	claims["user_id"] = u.ID
 	claims["role"] = u.Role
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
@@ -88,7 +87,7 @@ func (u *User) IsAuthenticated(conn *sql.DB) error {
 	return nil
 }
 
-func GetMyUser(conn *sql.DB, id int) (error, User) {
+func (i *User) GetMyUser(conn *sql.DB, id int) (error, User) {
 	u := User{}
 	row := conn.QueryRow("SELECT id, email , role from user_account WHERE id = ?", id)
 	err := row.Scan(&u.ID, &u.Email, &u.Role)
@@ -98,7 +97,7 @@ func GetMyUser(conn *sql.DB, id int) (error, User) {
 	return err, u
 }
 
-func IsTokenValid(tokenString string) (bool, string) {
+func (u *User) IsTokenValid(tokenString string) (bool, string) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// fmt.Printf("Parsing: %v \n", token)
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); ok == false {
