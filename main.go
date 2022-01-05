@@ -2,8 +2,8 @@ package main
 
 import (
 	"database/sql"
-	model2 "estateBackend/src/model"
-	routes2 "estateBackend/src/routes"
+	"estateBackend/model"
+	"estateBackend/routes"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
@@ -45,66 +45,66 @@ func main() {
 	//Login endpoints
 	usersGroup := Router.Group("users")
 	{
-		usersGroup.POST("register", routes2.UsersRegister)
-		usersGroup.POST("changePassword", routes2.UsersChangePassword)
-		usersGroup.POST("login", routes2.UsersLogin)
-		usersGroup.GET("me", routes2.GetMe)
+		usersGroup.POST("register", routes.UsersRegister)
+		usersGroup.POST("changePassword", routes.UsersChangePassword)
+		usersGroup.POST("login", routes.UsersLogin)
+		usersGroup.GET("me", routes.GetMe)
 	}
 
 	//Flats endpoints
 	flatsGroup := Router.Group("flats", authMiddleWare())
 	{
-		flatsGroup.GET("frombuilding", routes2.FlatFromBuilding)
-		flatsGroup.POST("create", routes2.FlatCreate)
-		flatsGroup.DELETE("delete", routes2.DeleteFlat)
-		flatsGroup.PUT("edit", routes2.UpdateFlat)
+		flatsGroup.GET("frombuilding", routes.FlatFromBuilding)
+		flatsGroup.POST("create", routes.FlatCreate)
+		flatsGroup.DELETE("delete", routes.DeleteFlat)
+		flatsGroup.PUT("edit", routes.UpdateFlat)
 
 	}
 
 	//Building endpoints
 	buildingGroup := Router.Group("buildings", authMiddleWare())
 	{
-		buildingGroup.POST("create", routes2.BuildingCreate)
-		buildingGroup.GET("getBuilding", routes2.GetBuildings)
-		buildingGroup.DELETE("delete", routes2.DeleteBuilding)
-		buildingGroup.PUT("edit", routes2.UpdateBuilding)
+		buildingGroup.POST("create", routes.BuildingCreate)
+		buildingGroup.GET("getBuilding", routes.GetBuildings)
+		buildingGroup.DELETE("delete", routes.DeleteBuilding)
+		buildingGroup.PUT("edit", routes.UpdateBuilding)
 	}
 
 	//Renters endpoints
 	rentersGroup := Router.Group("renters", authMiddleWare())
 	{
-		rentersGroup.POST("create", routes2.RenterCreate)
-		rentersGroup.GET("getRenter", routes2.GetRenter)
-		rentersGroup.DELETE("delete", routes2.DeleteRenter)
-		rentersGroup.PUT("edit", routes2.UpdateRenter)
+		rentersGroup.POST("create", routes.RenterCreate)
+		rentersGroup.GET("getRenter", routes.GetRenter)
+		rentersGroup.DELETE("delete", routes.DeleteRenter)
+		rentersGroup.PUT("edit", routes.UpdateRenter)
 
 	}
 
 	//Alterations endpoints
 	alterationsGroup := Router.Group("alterations", authMiddleWare())
 	{
-		alterationsGroup.POST("create", routes2.AlterationCreate)
-		alterationsGroup.GET("getAlterations", routes2.GetAlterations)
-		alterationsGroup.DELETE("delete", routes2.DeleteAlteration)
-		alterationsGroup.PUT("edit", routes2.UpdateAlteration)
+		alterationsGroup.POST("create", routes.AlterationCreate)
+		alterationsGroup.GET("getAlterations", routes.GetAlterations)
+		alterationsGroup.DELETE("delete", routes.DeleteAlteration)
+		alterationsGroup.PUT("edit", routes.UpdateAlteration)
 	}
 
 	//Lease endpoints
 	leaseGroup := Router.Group("leases", authMiddleWare())
 	{
-		leaseGroup.POST("create", routes2.LeaseCreate)
-		leaseGroup.GET("getLease", routes2.GetLeases)
-		leaseGroup.DELETE("delete", routes2.DeleteLease)
-		leaseGroup.PUT("edit", routes2.UpdateLease)
+		leaseGroup.POST("create", routes.LeaseCreate)
+		leaseGroup.GET("getLease", routes.GetLeases)
+		leaseGroup.DELETE("delete", routes.DeleteLease)
+		leaseGroup.PUT("edit", routes.UpdateLease)
 
 	}
 
 	//files endpoint
 	filesGroup := Router.Group("files")
 	{
-		filesGroup.POST("/upload", routes2.Upload)
-		filesGroup.GET("getFiles", routes2.FilesFromFlat)
-		filesGroup.GET("downloadFile", routes2.DownloadFile)
+		filesGroup.POST("/upload", routes.Upload)
+		filesGroup.GET("getFiles", routes.FilesFromFlat)
+		filesGroup.GET("downloadFile", routes.DownloadFile)
 	}
 	Router.Static("/file", "./public")
 
@@ -142,7 +142,7 @@ func authMiddleWare() gin.HandlerFunc {
 			return
 		}
 		token := split[1]
-		user := model2.User{}
+		user := model.User{}
 		//fmt.Printf("Bearer (%v) \n", token)
 		isValid, userID := user.IsTokenValid(token)
 		if isValid == false {

@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	model2 "estateBackend/src/model"
+	"estateBackend/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func RenterCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	renter := model2.Renter{}
+	renter := model.Renter{}
 	c.ShouldBindJSON(&renter)
 	err := renter.Create(conn)
 	if err != nil {
@@ -26,7 +26,7 @@ func GetRenter(c *gin.Context) {
 	conn := db.(*sql.DB)
 
 	renterId, _ := c.GetQuery("renter_id")
-	renter := model2.Renter{}
+	renter := model.Renter{}
 
 	renters, err := renter.GetRenters(conn, renterId)
 	if err != nil {
@@ -39,7 +39,7 @@ func DeleteRenter(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	renterId, _ := c.GetQuery("renter_id")
-	renter := model2.Renter{}
+	renter := model.Renter{}
 
 	err := renter.DeleteRenter(conn, renterId)
 	if err != nil {
@@ -52,7 +52,7 @@ func UpdateRenter(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	renter := model2.Renter{}
+	renter := model.Renter{}
 	c.ShouldBindJSON(&renter)
 	err := renter.UpdateRenter(conn)
 	if err != nil {

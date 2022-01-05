@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	model2 "estateBackend/src/model"
+	"estateBackend/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func BuildingCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	building := model2.Building{}
+	building := model.Building{}
 	c.ShouldBindJSON(&building)
 	err := building.Create(conn)
 	if err != nil {
@@ -25,7 +25,7 @@ func BuildingCreate(c *gin.Context) {
 func GetBuildings(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
-	building := model2.Building{}
+	building := model.Building{}
 
 	buildingId, _ := c.GetQuery("building_id")
 	buildings, err := building.GetBuildings(conn, buildingId)
@@ -40,7 +40,7 @@ func DeleteBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	buildingId, _ := c.GetQuery("building_id")
-	building := model2.Building{}
+	building := model.Building{}
 
 	err := building.DeleteBuilding(conn, buildingId)
 	if err != nil {
@@ -54,7 +54,7 @@ func UpdateBuilding(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	building := model2.Building{}
+	building := model.Building{}
 	c.ShouldBindJSON(&building)
 	err := building.Update(conn)
 	if err != nil {

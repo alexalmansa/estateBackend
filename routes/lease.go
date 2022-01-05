@@ -2,7 +2,7 @@ package routes
 
 import (
 	"database/sql"
-	model2 "estateBackend/src/model"
+	"estateBackend/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -11,7 +11,7 @@ func LeaseCreate(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	lease := model2.Lease{}
+	lease := model.Lease{}
 	c.ShouldBindJSON(&lease)
 	err := lease.Create(conn)
 
@@ -30,7 +30,7 @@ func GetLeases(c *gin.Context) {
 	renterid, _ := c.GetQuery("renter_id")
 	pastLeases := "true"
 	pastLeases, _ = c.GetQuery("past_leases")
-	lease := model2.Lease{}
+	lease := model.Lease{}
 
 	leases, err := lease.GetAllLeases(conn, flatId, renterid, pastLeases)
 	if err != nil {
@@ -44,7 +44,7 @@ func DeleteLease(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 	leaseId, _ := c.GetQuery("lease_id")
-	lease := model2.Lease{}
+	lease := model.Lease{}
 
 	err := lease.DeleteLease(conn, leaseId)
 	if err != nil {
@@ -58,7 +58,7 @@ func UpdateLease(c *gin.Context) {
 	db, _ := c.Get("db")
 	conn := db.(*sql.DB)
 
-	lease := model2.Lease{}
+	lease := model.Lease{}
 	c.ShouldBindJSON(&lease)
 	err := lease.UpdateLease(conn)
 	if err != nil {
