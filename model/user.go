@@ -77,6 +77,7 @@ func (u *User) IsAuthenticated(conn *sql.DB) error {
 	if err == sql.ErrNoRows {
 		fmt.Println("User with email not found")
 		return fmt.Errorf("Invalid login credentials")
+
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.passwordHash), []byte(u.Password))
